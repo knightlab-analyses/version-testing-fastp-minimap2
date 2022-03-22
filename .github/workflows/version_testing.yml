@@ -27,13 +27,13 @@ jobs:
           echo "Testing: " $COVER_PACKAGE
 
           conda config --add channels bioconda
-          conda create --yes -n fastp-minimap2 -c bioconda samtools=1.11 minimap2 fastp python=3.9
+          conda create --yes -n fastp-minimap2 -c bioconda samtools=1.12 minimap2=2.24 fastp python=3.9
           conda activate fastp-minimap2
 
           samtools_version=`samtools --version`
           minimap2_version=`minimap2 --version`
           fastp_version=$(fastp --version 2>&1)
-          if [[ $samtools_version != *"1.11"* ]]; then echo "wrong samtools version", $samtools_version; exit 1; fi
+          if [[ $samtools_version != *"1.12"* ]]; then echo "wrong samtools version", $samtools_version; exit 1; fi
           if [[ $minimap2_version != *"2.24"* ]]; then echo "wrong minimap2 version", $minimap2_version; exit 1; fi
           if [[ $fastp_version != *"0.23.2"* ]]; then echo "wrong fastp version", $fastp_version; exit 1; fi
 
