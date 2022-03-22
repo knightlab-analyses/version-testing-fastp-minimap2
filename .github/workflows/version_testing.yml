@@ -27,7 +27,7 @@ jobs:
           echo "Testing: " $COVER_PACKAGE
 
           conda config --add channels bioconda
-          conda create --yes -n fastp-minimap2 -c bioconda samtools=1.11 minimap2=2.24 fastp python=3.9
+          conda create --yes -n fastp-minimap2 -c bioconda samtools minimap2=2.24 fastp python=3.9
           conda activate fastp-minimap2
 
           samtools_version=`samtools --version`
