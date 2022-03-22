@@ -30,6 +30,7 @@ jobs:
           conda config --add channels conda-forge
           conda create --yes -n fastp-minimap2 -c bioconda minimap2 fastp
           conda activate fastp-minimap2
+          conda install samtools
 
           samtools_version=`samtools --version`
           minimap2_version=`minimap2 --version`
