@@ -24,13 +24,10 @@ jobs:
       - name: Basic dependencies install
         shell: bash -l {0}
         run: |
-          echo "Testing: " $COVER_PACKAGE
-
-          conda config --add channels bioconda
           conda config --add channels conda-forge
-          conda create --yes -n fastp-minimap2 -c bioconda minimap2 fastp
+          conda config --add channels bioconda
+          conda create --yes -n fastp-minimap2 -c bioconda samtools=1.11 minimap2 fastp python=3.9
           conda activate fastp-minimap2
-          conda install samtools
 
           samtools_version=`samtools --version`
           minimap2_version=`minimap2 --version`
