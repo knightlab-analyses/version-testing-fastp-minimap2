@@ -6,7 +6,7 @@ db_path=$3
 db_name=$4
 final_output=$5
 
-NPROCS=12
+NPROCS=3
 
 filename1_short="test_res_R1"
 filename2_short="test_res_R2"
