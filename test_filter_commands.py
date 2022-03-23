@@ -25,7 +25,9 @@ class TestPreProcessing(unittest.TestCase):
                                    self.output_path])
         print('======>')
         print('======>')
-        print(res_cmnd.communicate())
+        print(res_cmnd.stdout)
+        print('======>')
+        print(res_cmnd.stderr)
         print('======>')
         self.assertTrue(res_cmnd.returncode == 0)
 
