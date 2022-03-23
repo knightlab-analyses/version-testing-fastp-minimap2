@@ -24,6 +24,7 @@ class TestPreProcessing(unittest.TestCase):
                                    self.db_name,
                                    self.output_path])
         print('======>')
+        print('======>')
         print(res_cmnd.communicate())
         print('======>')
         self.assertTrue(res_cmnd.returncode == 0)
