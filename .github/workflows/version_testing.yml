@@ -42,7 +42,7 @@ jobs:
       - name: Building reference database
         shell: bash -l {0}
         env:
-          NPROCS: 3
+          NPROCS: 12
         run: |
           conda activate fastp-minimap2
 
@@ -63,8 +63,6 @@ jobs:
 
       - name: Running tests
         shell: bash -l {0}
-        env:
-          NPROCS: 1
         run: |
           conda activate fastp-minimap2
 
