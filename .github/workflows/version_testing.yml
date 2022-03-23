@@ -49,8 +49,10 @@ jobs:
           echo "Downloading files"
           wget -q https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/001/405/GCF_000001405.39_GRCh38.p13/GCF_000001405.39_GRCh38.p13_genomic.fna.gz
           wget -q ftp://ftp.ncbi.nlm.nih.gov/genomes/Viruses/enterobacteria_phage_phix174_sensu_lato_uid14015/NC_001422.fna
+          wget -q https://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/009/914/755/GCA_009914755.4_T2T-CHM13v2.0/GCA_009914755.4_T2T-CHM13v2.0_genomic.fna.gz
           gunzip -q GCF_000001405.39_GRCh38.p13_genomic.fna.gz
-          cat GCF_000001405.39_GRCh38.p13_genomic.fna NC_001422.fna > human-phix.fna
+          gunzip -q GCA_009914755.4_T2T-CHM13v2.0_genomic.fna.gz
+          cat GCA_009914755.4_T2T-CHM13v2.0_genomic.fna GCF_000001405.39_GRCh38.p13_genomic.fna NC_001422.fna > human-phix.fna
 
           # build the minimap2 DB
           echo "Building minimap2 database"
