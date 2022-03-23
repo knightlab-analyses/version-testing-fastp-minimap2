@@ -50,7 +50,9 @@ jobs:
           wget -q https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/001/405/GCF_000001405.39_GRCh38.p13/GCF_000001405.39_GRCh38.p13_genomic.fna.gz
           wget -q ftp://ftp.ncbi.nlm.nih.gov/genomes/Viruses/enterobacteria_phage_phix174_sensu_lato_uid14015/NC_001422.fna
           gunzip -q GCF_000001405.39_GRCh38.p13_genomic.fna.gz
-          cat GCF_000001405.39_GRCh38.p13_genomic.fna NC_001422.fna > human-phix.fna
+          # cat GCF_000001405.39_GRCh38.p13_genomic.fna NC_001422.fna > human-phix.fna
+          head -n 100 GCF_000001405.39_GRCh38.p13_genomic.fna > human-phix.fna
+          head -n 100 NC_001422.fna >> human-phix.fna
 
           # build the minimap2 DB
           echo "Building minimap2 database"
@@ -60,3 +62,12 @@ jobs:
           rm GCF_000001405.39_GRCh38.p13_genomic.fna
           rm NC_001422.fna
           rm human-phix.fna
+
+      - name: Running tests
+        shell: bash -l {0}
+        env:
+          NPROCS: 1
+        run: |
+          conda activate fastp-minimap2
+
+          python test_filter_commands.py
