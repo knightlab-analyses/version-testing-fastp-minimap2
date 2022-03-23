@@ -36,10 +36,13 @@ jobs:
           if [[ $minimap2_version != *"2.24"* ]]; then echo "wrong minimap2 version", $minimap2_version; exit 1; fi
           if [[ $fastp_version != *"0.23.2"* ]]; then echo "wrong fastp version", $fastp_version; exit 1; fi
 
+          echo "Untar main files"
+          tar zxvf data.tgz
+
       - name: Building reference database
         shell: bash -l {0}
         env:
-          NPROCS: 6
+          NPROCS: 1
         run: |
           conda activate fastp-minimap2
 
