@@ -8,7 +8,7 @@ on:
 jobs:
   # derived from https://github.com/actions/example-services/blob/master/.github/workflows/postgres-service.yml
   main:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
 
     steps:
       # Downloads a copy of the code in your repository before running CI tests
