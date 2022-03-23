@@ -39,16 +39,18 @@ jobs:
       - name: Building reference database
         shell: bash -l {0}
         env:
-          NPROCS: 12
+          NPROCS: 6
         run: |
           conda activate fastp-minimap2
 
-          wget https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/001/405/GCF_000001405.39_GRCh38.p13/GCF_000001405.39_GRCh38.p13_genomic.fna.gz
-          wget ftp://ftp.ncbi.nlm.nih.gov/genomes/Viruses/enterobacteria_phage_phix174_sensu_lato_uid14015/NC_001422.fna
-          gunzip GCF_000001405.39_GRCh38.p13_genomic.fna.gz
+          echo "Downloading files"
+          wget -q https://ftp.ncbi.nlm.nih.gov/genomes/all/GCF/000/001/405/GCF_000001405.39_GRCh38.p13/GCF_000001405.39_GRCh38.p13_genomic.fna.gz
+          wget -q ftp://ftp.ncbi.nlm.nih.gov/genomes/Viruses/enterobacteria_phage_phix174_sensu_lato_uid14015/NC_001422.fna
+          gunzip -q GCF_000001405.39_GRCh38.p13_genomic.fna.gz
           cat GCF_000001405.39_GRCh38.p13_genomic.fna NC_001422.fna > human-phix.fna
 
           # build the minimap2 DB
+          echo "Building minimap2 database"
           minimap2 -ax sr -t $NPROCS -d human-phix-db.mmi human-phix.fna
 
           # remove large unneeded files
