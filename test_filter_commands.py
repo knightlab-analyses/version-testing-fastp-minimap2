@@ -23,6 +23,11 @@ class TestPreProcessing(unittest.TestCase):
                                    self.database_path,
                                    self.db_name,
                                    self.output_path])
+        print('======>')
+        print('======>')
+        print(res_cmnd.communicate())
+        print('======>')
+        print('======>')
         self.assertTrue(res_cmnd.returncode == 0)
 
     def test_filter_results(self):
