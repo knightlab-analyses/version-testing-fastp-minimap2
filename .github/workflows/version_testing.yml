@@ -7,7 +7,7 @@ on:
 
 jobs:
   # derived from https://github.com/actions/example-services/blob/master/.github/workflows/postgres-service.yml
-  main:
+  version-testing:
     runs-on: macos-latest
 
     steps:
@@ -53,7 +53,7 @@ jobs:
           gunzip -q GCF_000001405.39_GRCh38.p13_genomic.fna.gz
           gunzip -q GCA_009914755.4_T2T-CHM13v2.0_genomic.fna.gz
           # cat GCA_009914755.4_T2T-CHM13v2.0_genomic.fna GCF_000001405.39_GRCh38.p13_genomic.fna NC_001422.fna > human-phix.fna
-          cat GCF_000001405.39_GRCh38.p13_genomic.fna NC_001422.fna > human-phix.fna
+          cat GCA_009914755.4_T2T-CHM13v2.0_genomic.fna NC_001422.fna > human-phix.fna
 
           # build the minimap2 DB
           echo "Building minimap2 database"
