@@ -36,6 +36,7 @@ jobs:
           if [[ $minimap2_version != *"2.24"* ]]; then echo "wrong minimap2 version", $minimap2_version; exit 1; fi
           if [[ $fastp_version != *"0.23.2"* ]]; then echo "wrong fastp version", $fastp_version; exit 1; fi
 
+          # cleaning conda packages to empty some space
           conda deactivate
           conda clean --yes --all
 
