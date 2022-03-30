@@ -30,9 +30,9 @@ class TestPreProcessing(unittest.TestCase):
         # base truth
         with open(self.output_path + '/host_read_ids.txt') as file:
             exp_lines = [line.replace('\n','') for line in file.readlines()]
-        # check file size
+        # check file size (should be much greater than 100 bytes)
         out_size = os.path.getsize(self.output_path + '/test_res_R1.trimmed.fastq.gz')
-        self.assertTrue(out_size != 0)
+        self.assertTrue(out_size > 100)
         # results
         with gzip.open(self.output_path + '/test_res_R1.trimmed.fastq.gz','r') as fin:
             res_lines = [line.decode("utf-8").replace('\n','') for line in fin if '@' in str(line)]
