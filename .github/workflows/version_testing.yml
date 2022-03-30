@@ -60,7 +60,7 @@ jobs:
 
           # build the minimap2 DB
           echo "Building minimap2 database"
-          minimap2 -ax sr -t $NPROCS -d human-phix-db.mmi human-phix.fna --split-prefix db-temp
+          minimap2 -ax sr -t $NPROCS -d human-phix-db.mmi human-phix.fna
 
           # remove large unneeded files
           rm GCA_009914755.4_T2T-CHM13v2.0_genomic.fna GCF_000001405.39_GRCh38.p13_genomic.fna NC_001422.fna human-phix.fna
