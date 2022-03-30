@@ -9,7 +9,7 @@ class TestPreProcessing(unittest.TestCase):
         self.curr_path = os.path.dirname(os.path.abspath(__file__))
         self.output_path = self.curr_path + "/data"
         self.file_one = self.output_path + "/all_reads_R1.fq"
-        self.file_two = self.output_path + "/all_reads_R1.fq"
+        self.file_two = self.output_path + "/all_reads_R2.fq"
         self.database_path = self.curr_path
         self.db_name = "human-phix-db"
         pass
@@ -30,11 +30,15 @@ class TestPreProcessing(unittest.TestCase):
         # base truth
         with open(self.output_path + '/host_read_ids.txt') as file:
             exp_lines = [line.replace('\n','') for line in file.readlines()]
+        # check file size
+        out_size = os.path.getsize(self.output_path + '/test_res_R1.trimmed.fastq.gz')
+        self.assertTrue(out_size != 0)
         # results
         with gzip.open(self.output_path + '/test_res_R1.trimmed.fastq.gz','r') as fin:
             res_lines = [line.decode("utf-8").replace('\n','') for line in fin if '@' in str(line)]
         # check there are no host reads passing filter
-        self.assertTrue(len(set(res_lines) & set(exp_lines)) == 0)
+        rel_tol = len(set(res_lines) & set(exp_lines)) / len(set(exp_lines)) * 100
+        self.assertTrue(rel_tol < 0.1)
 	# finally remove files
         os.remove(self.curr_path + "/fastp.html")
         os.remove(self.curr_path + "/fastp.json")
