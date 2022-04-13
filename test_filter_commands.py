@@ -13,6 +13,7 @@ class TestPreProcessing(unittest.TestCase):
         self.database_path = self.curr_path
         self.db_one_name = "human-phix-db"
         self.db_two_name = "chm13"
+        self.db_three_name = "kraken2-human-db"
         pass
 
     def test_command(self):
@@ -24,6 +25,7 @@ class TestPreProcessing(unittest.TestCase):
                                    self.database_path,
                                    self.db_one_name,
                                    self.db_two_name,
+                                   self.db_three_name,
                                    self.output_path])
         self.assertTrue(res_cmnd.returncode == 0)
 

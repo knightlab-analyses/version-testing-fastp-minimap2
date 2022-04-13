@@ -26,7 +26,7 @@ jobs:
         run: |
           conda config --add channels conda-forge
           conda config --add channels bioconda
-          conda create --yes -n fastp-minimap2 -c bioconda samtools=1.11 minimap2 fastp python=3.9
+          conda create --yes -n fastp-minimap2 -c bioconda samtools=1.11 minimap2 fastp python=3.9 kraken2=2.1.1
           conda activate fastp-minimap2
 
           samtools_version=`samtools --version`
@@ -64,6 +64,10 @@ jobs:
           minimap2 -ax sr -t $NPROCS -d chm13.mmi GCA_009914755.4_T2T-CHM13v2.0_genomic.fna
           # remove large unneeded files
           rm GCA_009914755.4_T2T-CHM13v2.0_genomic.fna NC_001422.fna human-phix.fna GRCh38_latest_genomic.fna 
+
+          # build kraken2 db
+          curl -L -o kraken2-human-db.tar.gz https://ndownloader.figshare.com/files/25627058
+          tar -xzvf kraken2-human-db.tar.gz
 
       - name: Running tests
         shell: bash -l {0}
