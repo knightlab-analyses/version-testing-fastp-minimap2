@@ -17,8 +17,10 @@ jobs:
           auto-update-conda: true
           python-version: 3.9
 
-      - name: Basic dependencies install
+      - name: Basic dependencies install and DB building
         shell: bash -l {0}
+        env:
+          NPROCS: 12
         run: |
           conda config --add channels conda-forge
           conda config --add channels bioconda
@@ -31,15 +33,6 @@ jobs:
           if [[ $samtools_version != *"1.11"* ]]; then echo "wrong samtools version", $samtools_version; exit 1; fi
           if [[ $minimap2_version != *"2.24"* ]]; then echo "wrong minimap2 version", $minimap2_version; exit 1; fi
           if [[ $fastp_version != *"0.23.2"* ]]; then echo "wrong fastp version", $fastp_version; exit 1; fi
-
-          conda deactivate
-
-      - name: Building reference database
-        shell: bash -l {0}
-        env:
-          NPROCS: 12
-        run: |
-          conda activate fastp-minimap2
 
           echo "Downloading files"
           wget -q ftp://ftp.ncbi.nlm.nih.gov/genomes/Viruses/enterobacteria_phage_phix174_sensu_lato_uid14015/NC_001422.fna
