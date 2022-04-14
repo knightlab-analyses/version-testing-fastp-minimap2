@@ -7,7 +7,7 @@ on:
 
 jobs:
   # derived from https://github.com/actions/example-services/blob/master/.github/workflows/postgres-service.yml
-  version-testing:
+  build:
     runs-on: macos-latest
 
       - name: Setup for conda
@@ -30,6 +30,8 @@ jobs:
           if [[ $samtools_version != *"1.11"* ]]; then echo "wrong samtools version", $samtools_version; exit 1; fi
           if [[ $minimap2_version != *"2.24"* ]]; then echo "wrong minimap2 version", $minimap2_version; exit 1; fi
           if [[ $fastp_version != *"0.23.2"* ]]; then echo "wrong fastp version", $fastp_version; exit 1; fi
+
+          conda deactivate
 
       - name: Building reference database
         shell: bash -l {0}
