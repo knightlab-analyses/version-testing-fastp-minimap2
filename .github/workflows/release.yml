@@ -6,10 +6,8 @@ on:
       - '*'
 
 jobs:
-  # derived from https://github.com/actions/example-services/blob/master/.github/workflows/postgres-service.yml
   build:
     runs-on: macos-latest
-
     steps:
       - name: Setup for conda
         uses: conda-incubator/setup-miniconda@v2
@@ -55,23 +53,23 @@ jobs:
 
           tar zcvf human-db.tgz human*.mmi kraken2-human-db.tar.gz
 
-        - name: Create Release
-          id: create_release
-          uses: actions/create-release@v1
-          env:
-            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          with:
-            tag_name: ${{ github.ref }}
-            release_name: Release ${{ github.ref }}
-            draft: false
-            prerelease: false
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
 
-        - name: upload mmi files
-          uses: actions/upload-release-asset@v1
-          env:
-            GITHUB_TOKEN: ${{ github.token }}
-          with:
-            upload_url: ${{ steps.create_release.outputs.upload_url }}
-            asset_path: ./human-db.mmi.tgz
-            asset_name: human-db.mmi.tgz
-            asset_content_type: application/octet-stream
+      - name: upload mmi files
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          asset_path: ./human-db.mmi.tgz
+          asset_name: human-db.mmi.tgz
+          asset_content_type: application/octet-stream
