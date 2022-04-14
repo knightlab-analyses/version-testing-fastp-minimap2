@@ -54,7 +54,10 @@ jobs:
           # remove large unneeded files
           rm GCA_009914755.4_T2T-CHM13v2.0_genomic.fna GRCh38_latest_genomic.fna NC_001422.fna human-GCA-phix.fna
 
-          tar zcvf human-db.mmi.tgz human*.mmi
+          # get kraken2 human db and add it to the final packages
+          curl -L -o kraken2-human-db.tar.gz https://ndownloader.figshare.com/files/25627058
+
+          tar zcvf human-db.tgz human*.mmi kraken2-human-db.tar.gz
 
         - name: Create Release
           id: create_release
