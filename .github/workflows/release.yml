@@ -1,0 +1,81 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - '*'
+
+jobs:
+  # derived from https://github.com/actions/example-services/blob/master/.github/workflows/postgres-service.yml
+  version-testing:
+    runs-on: macos-latest
+
+      - name: Setup for conda
+        uses: conda-incubator/setup-miniconda@v2
+        with:
+          auto-update-conda: true
+          python-version: 3.9
+
+      - name: Basic dependencies install
+        shell: bash -l {0}
+        run: |
+          conda config --add channels conda-forge
+          conda config --add channels bioconda
+          conda create --yes -n fastp-minimap2 -c bioconda samtools=1.11 minimap2 fastp python=3.9
+          conda activate fastp-minimap2
+
+          samtools_version=`samtools --version`
+          minimap2_version=`minimap2 --version`
+          fastp_version=$(fastp --version 2>&1)
+          if [[ $samtools_version != *"1.11"* ]]; then echo "wrong samtools version", $samtools_version; exit 1; fi
+          if [[ $minimap2_version != *"2.24"* ]]; then echo "wrong minimap2 version", $minimap2_version; exit 1; fi
+          if [[ $fastp_version != *"0.23.2"* ]]; then echo "wrong fastp version", $fastp_version; exit 1; fi
+
+      - name: Building reference database
+        shell: bash -l {0}
+        env:
+          NPROCS: 12
+        run: |
+          conda activate fastp-minimap2
+
+          echo "Downloading files"
+          wget -q ftp://ftp.ncbi.nlm.nih.gov/genomes/Viruses/enterobacteria_phage_phix174_sensu_lato_uid14015/NC_001422.fna
+          wget -q https://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/009/914/755/GCA_009914755.4_T2T-CHM13v2.0/GCA_009914755.4_T2T-CHM13v2.0_genomic.fna.gz
+          wget -q https://ftp.ncbi.nlm.nih.gov/refseq/H_sapiens/annotation/GRCh38_latest/refseq_identifiers/GRCh38_latest_genomic.fna.gz
+          gunzip -q GCA_009914755.4_T2T-CHM13v2.0_genomic.fna.gz
+          gunzip -q GRCh38_latest_genomic.fna.gz
+          cat GCA_009914755.4_T2T-CHM13v2.0_genomic.fna NC_001422.fna > human-GCA-phix.fna
+
+          # build the minimap2 DB
+          echo "Building human minimap2 databases"
+          minimap2 -ax sr -t $NPROCS -d human-GRC-db.mmi GRCh38_latest_genomic.fna
+          minimap2 -ax sr -t $NPROCS -d human-GCA-phix-db.mmi human-GCA-phix.fna
+
+          # remove large unneeded files
+          rm GCA_009914755.4_T2T-CHM13v2.0_genomic.fna GRCh38_latest_genomic.fna NC_001422.fna human-GCA-phix.fna
+
+          # get kraken2 human db and add it to the final packages
+          curl -L -o kraken2-human-db.tar.gz https://ndownloader.figshare.com/files/25627058
+
+          tar zcvf human-db.tgz human*.mmi kraken2-human-db.tar.gz
+
+        - name: Create Release
+          id: create_release
+          uses: actions/create-release@v1
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          with:
+            tag_name: ${{ github.ref }}
+            release_name: Release ${{ github.ref }}
+            draft: false
+            prerelease: false
+
+        - name: upload mmi files
+          uses: actions/upload-release-asset@v1
+          env:
+            GITHUB_TOKEN: ${{ github.token }}
+          with:
+            upload_url: ${{ steps.create_release.outputs.upload_url }}
+            asset_path: ./human-db.mmi.tgz
+            asset_name: human-db.mmi.tgz
+            asset_content_type: application/octet-stream
