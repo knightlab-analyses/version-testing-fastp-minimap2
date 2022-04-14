@@ -1,19 +1,14 @@
-# name: Version Testing fastp-minimap2 CI
+name: Release
 
 on:
   push:
-    branches: [ main ]
-  pull_request:
+    tags:
+      - '*'
 
 jobs:
   # derived from https://github.com/actions/example-services/blob/master/.github/workflows/postgres-service.yml
   version-testing:
     runs-on: ubuntu-latest
-
-    steps:
-      # Downloads a copy of the code in your repository before running CI tests
-      - name: Check out repository code
-        uses: actions/checkout@v2
 
       - name: Setup for conda
         uses: conda-incubator/setup-miniconda@v2
@@ -36,13 +31,6 @@ jobs:
           if [[ $minimap2_version != *"2.24"* ]]; then echo "wrong minimap2 version", $minimap2_version; exit 1; fi
           if [[ $fastp_version != *"0.23.2"* ]]; then echo "wrong fastp version", $fastp_version; exit 1; fi
 
-          # cleaning conda packages to empty some space
-          conda deactivate
-          conda clean --yes --all
-
-          echo "Untar main files"
-          tar zxvf data.tgz
-
       - name: Building reference database
         shell: bash -l {0}
         env:
@@ -53,19 +41,38 @@ jobs:
           echo "Downloading files"
           wget -q ftp://ftp.ncbi.nlm.nih.gov/genomes/Viruses/enterobacteria_phage_phix174_sensu_lato_uid14015/NC_001422.fna
           wget -q https://ftp.ncbi.nlm.nih.gov/genomes/all/GCA/009/914/755/GCA_009914755.4_T2T-CHM13v2.0/GCA_009914755.4_T2T-CHM13v2.0_genomic.fna.gz
+          wget -q https://ftp.ncbi.nlm.nih.gov/refseq/H_sapiens/annotation/GRCh38_latest/refseq_identifiers/GRCh38_latest_genomic.fna.gz
           gunzip -q GCA_009914755.4_T2T-CHM13v2.0_genomic.fna.gz
-          cat GCA_009914755.4_T2T-CHM13v2.0_genomic.fna NC_001422.fna > human-phix.fna
+          gunzip -q GRCh38_latest_genomic.fna.gz
+          cat GCA_009914755.4_T2T-CHM13v2.0_genomic.fna NC_001422.fna > human-GCA-phix.fna
 
           # build the minimap2 DB
-          echo "Building minimap2 database"
-          minimap2 -ax sr -t $NPROCS -d human-phix-db.mmi human-phix.fna
+          echo "Building human minimap2 databases"
+          minimap2 -ax sr -t $NPROCS -d human-GRC-db.mmi GRCh38_latest_genomic.fna
+          minimap2 -ax sr -t $NPROCS -d human-GCA-phix-db.mmi human-GCA-phix.fna
 
           # remove large unneeded files
-          rm GCA_009914755.4_T2T-CHM13v2.0_genomic.fna NC_001422.fna human-phix.fna
+          rm GCA_009914755.4_T2T-CHM13v2.0_genomic.fna GRCh38_latest_genomic.fna NC_001422.fna human-GCA-phix.fna
 
-      - name: Running tests
-        shell: bash -l {0}
-        run: |
-          conda activate fastp-minimap2
+          tar zcvf human-db.mmi.tgz human*.mmi
 
-          python test_filter_commands.py
+        - name: Create Release
+          id: create_release
+          uses: actions/create-release@v1
+          env:
+            GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          with:
+            tag_name: ${{ github.ref }}
+            release_name: Release ${{ github.ref }}
+            draft: false
+            prerelease: false
+
+        - name: upload mmi files
+          uses: actions/upload-release-asset@v1
+          env:
+            GITHUB_TOKEN: ${{ github.token }}
+          with:
+            upload_url: ${{ steps.create_release.outputs.upload_url }}
+            asset_path: ./human-db.mmi.tgz
+            asset_name: human-db.mmi.tgz
+            asset_content_type: application/octet-stream
