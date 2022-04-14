@@ -11,8 +11,8 @@ class TestPreProcessing(unittest.TestCase):
         self.file_one = self.output_path + "/all_reads_R1.fq"
         self.file_two = self.output_path + "/all_reads_R2.fq"
         self.database_path = self.curr_path
-        self.db_one_name = "human-phix-db"
-        self.db_two_name = "chm13"
+        self.db_one_name = "human-GCA-phix-db"
+        self.db_two_name = "human-GRC-db"
         self.db_three_name = "kraken2-human-db"
         pass
 
