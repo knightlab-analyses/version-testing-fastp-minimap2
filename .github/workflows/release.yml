@@ -8,7 +8,7 @@ on:
 jobs:
   # derived from https://github.com/actions/example-services/blob/master/.github/workflows/postgres-service.yml
   version-testing:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
 
       - name: Setup for conda
         uses: conda-incubator/setup-miniconda@v2
