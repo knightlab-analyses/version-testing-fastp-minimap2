@@ -53,17 +53,6 @@ jobs:
 
           tar zcvf human-db.tgz human*.mmi kraken2-human-db.tar.gz
 
-      - name: Create Release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          draft: false
-          prerelease: false
-
       - name: upload mmi files
         uses: actions/upload-release-asset@v1
         env:
