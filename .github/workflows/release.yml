@@ -57,14 +57,35 @@ jobs:
           # get kraken2 human db and add it to the final packages
           curl -L -o kraken2-human-db.tar.gz https://ndownloader.figshare.com/files/25627058
 
-          tar zcvf human-db.tgz human*.mmi kraken2-human-db.tar.gz
+          gzip human-GRC-db.mmi
+          gzip human-GCA-phix-db.mmi
 
-      - name: upload mmi files
+      - name: upload human-GRC file
         uses: actions/upload-release-asset@v1
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
           upload_url: ${{ steps.get_release.outputs.upload_url }}
-          asset_path: ./human-db.tgz
-          asset_name: human-db.tgz
+          asset_path: ./human-GRC-db.mmi.gz
+          asset_name: human-GRC-db.mmi.gz
+          asset_content_type: application/octet-stream
+
+      - name: upload human-GCA-phix file
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.get_release.outputs.upload_url }}
+          asset_path: ./human-GCA-phix-db.mmi.gz
+          asset_name: human-GCA-phix-db.mmi.gz
+          asset_content_type: application/octet-stream
+
+      - name: upload kraken2-human-db.tar.gz file
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+        with:
+          upload_url: ${{ steps.get_release.outputs.upload_url }}
+          asset_path: ./kraken2-human-db.tar.gz
+          asset_name: kraken2-human-db.tar.gz
           asset_content_type: application/octet-stream
