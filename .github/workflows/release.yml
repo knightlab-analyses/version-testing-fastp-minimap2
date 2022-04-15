@@ -15,6 +15,12 @@ jobs:
           auto-update-conda: true
           python-version: 3.9
 
+      - name: Get release
+        id: get_release
+        uses: bruceadams/get-release@v1.2.3
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+
       - name: Basic dependencies install and DB building
         shell: bash -l {0}
         env:
@@ -58,7 +64,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
+          upload_url: ${{ steps.get_release.outputs.upload_url }}
           asset_path: ./human-db.mmi.tgz
           asset_name: human-db.mmi.tgz
           asset_content_type: application/octet-stream
